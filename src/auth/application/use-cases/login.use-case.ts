@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, UnauthorizedException } from '@nestjs/common';
 import { IUserRepository } from '../../../users/domain/repositories/user.repository.interface';
 import { IAuthService } from '../../domain/services/auth.service.interface';
 import { LoginDto, AuthResponseDto } from '../dtos/auth.dto';
@@ -17,7 +17,7 @@ export class LoginUseCase {
     // Find user by email
     const user = await this.userRepository.findByEmail(loginDto.email);
     if (!user) {
-      throw new Error('Invalid credentials');
+      throw new UnauthorizedException('Invalid credentials');
     }
 
     // Validate password
@@ -26,7 +26,7 @@ export class LoginUseCase {
       user.getPassword,
     );
     if (!isPasswordValid) {
-      throw new Error('Invalid credentials');
+      throw new UnauthorizedException('Invalid credentials');
     }
 
     // Generate token

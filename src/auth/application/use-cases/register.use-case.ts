@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, ConflictException } from '@nestjs/common';
 import { IUserRepository } from '../../../users/domain/repositories/user.repository.interface';
 import { IAuthService } from '../../domain/services/auth.service.interface';
 import { User } from '../../../users/domain/entities/user.entity';
@@ -20,7 +20,7 @@ export class RegisterUseCase {
       registerDto.email,
     );
     if (existingUser) {
-      throw new Error('User already exists');
+      throw new ConflictException('User already exists');
     }
 
     // Hash password

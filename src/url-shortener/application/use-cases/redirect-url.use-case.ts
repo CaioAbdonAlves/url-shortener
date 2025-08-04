@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { IShortUrlRepository } from '../../domain/repositories/short-url.repository.interface';
 import { SHORT_URL_REPOSITORY } from '../../domain/tokens/url-shortener.tokens';
 
@@ -13,7 +13,7 @@ export class RedirectUrlUseCase {
     const shortUrl = await this.shortUrlRepository.findByShortCode(shortCode);
 
     if (!shortUrl) {
-      throw new Error('URL not found');
+      throw new NotFoundException('URL not found');
     }
 
     if (shortUrl.isDeleted()) {
