@@ -1,4 +1,11 @@
-import { IsUrl, IsString, IsOptional } from 'class-validator';
+import {
+  IsUrl,
+  IsString,
+  IsOptional,
+  MinLength,
+  MaxLength,
+  Matches,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ShortenUrlDto {
@@ -10,12 +17,22 @@ export class ShortenUrlDto {
   originalUrl: string;
 
   @ApiProperty({
-    description: 'Custom short code (optional)',
+    description:
+      'Custom short code (optional, 3-6 characters, alphanumeric only)',
     example: 'abc123',
     required: false,
   })
   @IsOptional()
   @IsString()
+  @MinLength(3, {
+    message: 'Custom short code must be at least 3 characters long',
+  })
+  @MaxLength(6, {
+    message: 'Custom short code must be at most 6 characters long',
+  })
+  @Matches(/^[a-zA-Z0-9]+$/, {
+    message: 'Custom short code must contain only letters and numbers',
+  })
   customShortCode?: string;
 }
 
