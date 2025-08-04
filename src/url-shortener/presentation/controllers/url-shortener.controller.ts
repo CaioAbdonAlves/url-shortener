@@ -42,6 +42,7 @@ export class UrlShortenerController {
 
   @Post('shorten')
   @HttpCode(HttpStatus.CREATED)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Shorten a URL' })
   @ApiResponse({
     status: 201,
@@ -63,8 +64,7 @@ export class UrlShortenerController {
     if (authHeader && authHeader.startsWith('Bearer ')) {
       try {
         const token = authHeader.substring(7);
-        // For now, we'll extract user info from the token manually
-        // In a real implementation, you'd verify the token properly
+        // Decode JWT payload
         const payload = JSON.parse(
           Buffer.from(token.split('.')[1], 'base64').toString(),
         );
