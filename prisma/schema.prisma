@@ -38,21 +38,6 @@ model ShortUrl {
 
   // Relations
   user   User?      @relation(fields: [userId], references: [id])
-  clicks UrlClick[]
 
   @@map("short_urls")
-}
-
-model UrlClick {
-  id        String   @id @default(cuid())
-  urlId     String   @map("url_id")
-  userAgent String?  @map("user_agent")
-  ipAddress String?  @map("ip_address")
-  referer   String?
-  clickedAt DateTime @default(now()) @map("clicked_at")
-
-  // Relations
-  shortUrl ShortUrl @relation(fields: [urlId], references: [id])
-
-  @@map("url_clicks")
 }
