@@ -17,7 +17,7 @@ export class RedirectUrlUseCase {
     }
 
     if (shortUrl.isDeleted()) {
-      throw new Error('URL has been deleted');
+      throw new NotFoundException('URL has been deleted');
     }
 
     // Increment clicks count
