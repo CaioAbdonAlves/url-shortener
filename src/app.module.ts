@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { PrismaService } from './shared/infrastructure/prisma/prisma.service';
 import { AuthModule } from './auth/auth.module';
 import { UrlShortenerModule } from './url-shortener/url-shortener.module';
+import { MetricsModule } from './shared/infrastructure/metrics/metrics.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { UrlShortenerModule } from './url-shortener/url-shortener.module';
     }),
     AuthModule,
     UrlShortenerModule,
+    MetricsModule,
   ],
   providers: [PrismaService],
 })

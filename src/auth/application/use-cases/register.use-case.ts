@@ -4,6 +4,7 @@ import { IAuthService } from '../../domain/services/auth.service.interface';
 import { User } from '../../../users/domain/entities/user.entity';
 import { RegisterDto, AuthResponseDto } from '../dtos/auth.dto';
 import { AUTH_SERVICE, USER_REPOSITORY } from '../../domain/tokens/auth.tokens';
+import { PrometheusService } from '../../../shared/infrastructure/metrics/prometheus.service';
 
 @Injectable()
 export class RegisterUseCase {
@@ -12,6 +13,7 @@ export class RegisterUseCase {
     private readonly userRepository: IUserRepository,
     @Inject(AUTH_SERVICE)
     private readonly authService: IAuthService,
+    private readonly prometheusService: PrometheusService,
   ) {}
 
   async execute(registerDto: RegisterDto): Promise<AuthResponseDto> {
@@ -20,6 +22,7 @@ export class RegisterUseCase {
       registerDto.email,
     );
     if (existingUser) {
+      this.prometheusService.incrementRegistration('failure');
       throw new ConflictException('User already exists');
     }
 
@@ -37,6 +40,9 @@ export class RegisterUseCase {
       savedUser.getId,
       savedUser.getEmail,
     );
+
+    // Registrar métrica de sucesso
+    this.prometheusService.incrementRegistration('success');
 
     return {
       accessToken,

@@ -15,9 +15,10 @@ import {
 } from './domain/tokens/url-shortener.tokens';
 import { PrismaService } from '../shared/infrastructure/prisma/prisma.service';
 import { AuthModule } from '../auth/auth.module';
+import { MetricsModule } from '../shared/infrastructure/metrics/metrics.module';
 
 @Module({
-  imports: [AuthModule],
+  imports: [AuthModule, MetricsModule],
   controllers: [UrlShortenerController, RedirectController],
   providers: [
     ShortenUrlUseCase,

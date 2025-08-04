@@ -9,6 +9,7 @@ import { JwtAuthGuard } from './presentation/guards/jwt-auth.guard';
 import { PrismaUserRepository } from '../users/infrastructure/repositories/prisma-user.repository';
 import { AUTH_SERVICE, USER_REPOSITORY } from './domain/tokens/auth.tokens';
 import { PrismaService } from '../shared/infrastructure/prisma/prisma.service';
+import { MetricsModule } from '../shared/infrastructure/metrics/metrics.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { PrismaService } from '../shared/infrastructure/prisma/prisma.service';
       }),
       inject: [ConfigService],
     }),
+    MetricsModule,
   ],
   controllers: [AuthController],
   providers: [

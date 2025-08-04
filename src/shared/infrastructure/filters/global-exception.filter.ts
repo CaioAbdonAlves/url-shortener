@@ -7,10 +7,13 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { PrometheusService } from '../metrics/prometheus.service';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(GlobalExceptionFilter.name);
+
+  constructor(private readonly prometheusService: PrometheusService) {}
 
   catch(exception: unknown, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
@@ -43,6 +46,9 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         (exception as Error).stack,
       );
     }
+
+    // Registrar métrica de erro
+    this.prometheusService.incrementError(error, request.path);
 
     const errorResponse = {
       statusCode: status,

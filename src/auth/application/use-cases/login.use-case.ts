@@ -3,6 +3,7 @@ import { IUserRepository } from '../../../users/domain/repositories/user.reposit
 import { IAuthService } from '../../domain/services/auth.service.interface';
 import { LoginDto, AuthResponseDto } from '../dtos/auth.dto';
 import { AUTH_SERVICE, USER_REPOSITORY } from '../../domain/tokens/auth.tokens';
+import { PrometheusService } from '../../../shared/infrastructure/metrics/prometheus.service';
 
 @Injectable()
 export class LoginUseCase {
@@ -11,12 +12,14 @@ export class LoginUseCase {
     private readonly userRepository: IUserRepository,
     @Inject(AUTH_SERVICE)
     private readonly authService: IAuthService,
+    private readonly prometheusService: PrometheusService,
   ) {}
 
   async execute(loginDto: LoginDto): Promise<AuthResponseDto> {
     // Find user by email
     const user = await this.userRepository.findByEmail(loginDto.email);
     if (!user) {
+      this.prometheusService.incrementLoginAttempts('failure');
       throw new UnauthorizedException('Invalid credentials');
     }
 
@@ -26,6 +29,7 @@ export class LoginUseCase {
       user.getPassword,
     );
     if (!isPasswordValid) {
+      this.prometheusService.incrementLoginAttempts('failure');
       throw new UnauthorizedException('Invalid credentials');
     }
 
@@ -34,6 +38,9 @@ export class LoginUseCase {
       user.getId,
       user.getEmail,
     );
+
+    // Registrar métrica de sucesso
+    this.prometheusService.incrementLoginAttempts('success');
 
     return {
       accessToken,

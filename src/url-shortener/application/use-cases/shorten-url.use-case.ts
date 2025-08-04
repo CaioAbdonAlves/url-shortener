@@ -7,6 +7,7 @@ import {
   SHORT_URL_REPOSITORY,
   URL_SHORTENING_SERVICE,
 } from '../../domain/tokens/url-shortener.tokens';
+import { PrometheusService } from '../../../shared/infrastructure/metrics/prometheus.service';
 
 @Injectable()
 export class ShortenUrlUseCase {
@@ -15,6 +16,7 @@ export class ShortenUrlUseCase {
     private readonly shortUrlRepository: IShortUrlRepository,
     @Inject(URL_SHORTENING_SERVICE)
     private readonly urlShorteningService: IUrlShorteningService,
+    private readonly prometheusService: PrometheusService,
   ) {}
 
   async execute(
@@ -41,6 +43,9 @@ export class ShortenUrlUseCase {
     // Create short URL
     const shortUrl = ShortUrl.create(dto.originalUrl, shortCode, userId);
     const savedShortUrl = await this.shortUrlRepository.create(shortUrl);
+
+    // Registrar métrica
+    this.prometheusService.incrementUrlCreated(userId);
 
     return {
       id: savedShortUrl.getId,
