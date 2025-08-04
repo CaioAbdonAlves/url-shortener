@@ -1,7 +1,7 @@
 export class ShortUrl {
   constructor(
     private readonly id: string,
-    private readonly originalUrl: string,
+    private originalUrl: string, // Removido readonly para permitir modificação
     private readonly shortCode: string,
     private readonly userId?: string,
     private clicksCount: number = 0,
@@ -66,7 +66,7 @@ export class ShortUrl {
   }
 
   public isDeleted(): boolean {
-    return this.deletedAt !== undefined;
+    return this.deletedAt != null;
   }
 
   // Factory method

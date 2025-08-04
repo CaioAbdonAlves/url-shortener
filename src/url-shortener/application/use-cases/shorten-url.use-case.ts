@@ -1,13 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { IShortUrlRepository } from '../../domain/repositories/short-url.repository.interface';
 import { IUrlShorteningService } from '../../domain/services/url-shortening.service.interface';
 import { ShortUrl } from '../../domain/entities/short-url.entity';
 import { ShortenUrlDto, ShortUrlResponseDto } from '../dtos/url-shortener.dto';
+import {
+  SHORT_URL_REPOSITORY,
+  URL_SHORTENING_SERVICE,
+} from '../../domain/tokens/url-shortener.tokens';
 
 @Injectable()
 export class ShortenUrlUseCase {
   constructor(
+    @Inject(SHORT_URL_REPOSITORY)
     private readonly shortUrlRepository: IShortUrlRepository,
+    @Inject(URL_SHORTENING_SERVICE)
     private readonly urlShorteningService: IUrlShorteningService,
   ) {}
 
