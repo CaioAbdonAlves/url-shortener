@@ -4,6 +4,8 @@ import { RedirectController } from './presentation/controllers/redirect.controll
 import { ShortenUrlUseCase } from './application/use-cases/shorten-url.use-case';
 import { GetUrlsByUserUseCase } from './application/use-cases/get-urls-by-user.use-case';
 import { RedirectUrlUseCase } from './application/use-cases/redirect-url.use-case';
+import { UpdateUrlUseCase } from './application/use-cases/update-url.use-case';
+import { DeleteUrlUseCase } from './application/use-cases/delete-url.use-case';
 import { PrismaShortUrlRepository } from './infrastructure/repositories/prisma-short-url.repository';
 import { RandomUrlShorteningService } from './infrastructure/services/random-url-shortening.service';
 
@@ -21,6 +23,8 @@ import { AuthModule } from '../auth/auth.module';
     ShortenUrlUseCase,
     GetUrlsByUserUseCase,
     RedirectUrlUseCase,
+    UpdateUrlUseCase,
+    DeleteUrlUseCase,
     PrismaService,
     {
       provide: SHORT_URL_REPOSITORY,

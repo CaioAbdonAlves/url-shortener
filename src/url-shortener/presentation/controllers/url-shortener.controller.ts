@@ -22,6 +22,8 @@ import {
 import { ShortenUrlUseCase } from '../../application/use-cases/shorten-url.use-case';
 import { GetUrlsByUserUseCase } from '../../application/use-cases/get-urls-by-user.use-case';
 import { RedirectUrlUseCase } from '../../application/use-cases/redirect-url.use-case';
+import { UpdateUrlUseCase } from '../../application/use-cases/update-url.use-case';
+import { DeleteUrlUseCase } from '../../application/use-cases/delete-url.use-case';
 import {
   ShortenUrlDto,
   UpdateUrlDto,
@@ -38,6 +40,8 @@ export class UrlShortenerController {
     private readonly shortenUrlUseCase: ShortenUrlUseCase,
     private readonly getUrlsByUserUseCase: GetUrlsByUserUseCase,
     private readonly redirectUrlUseCase: RedirectUrlUseCase,
+    private readonly updateUrlUseCase: UpdateUrlUseCase,
+    private readonly deleteUrlUseCase: DeleteUrlUseCase,
   ) {}
 
   @Post('shorten')
@@ -135,8 +139,7 @@ export class UrlShortenerController {
     @Body() updateUrlDto: UpdateUrlDto,
     @Req() req: RequestWithUser,
   ): Promise<ShortUrlResponseDto> {
-    // TODO: Implement update URL use case
-    throw new Error('Not implemented yet');
+    return this.updateUrlUseCase.execute(id, updateUrlDto, req.user.id);
   }
 
   @Delete(':id')
@@ -160,7 +163,6 @@ export class UrlShortenerController {
     @Param('id') id: string,
     @Req() req: RequestWithUser,
   ): Promise<void> {
-    // TODO: Implement delete URL use case
-    throw new Error('Not implemented yet');
+    await this.deleteUrlUseCase.execute(id, req.user.id);
   }
 }
