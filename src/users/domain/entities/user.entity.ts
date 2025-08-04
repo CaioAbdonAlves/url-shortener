@@ -1,0 +1,67 @@
+export class User {
+  constructor(
+    private readonly id: string,
+    private readonly email: string,
+    private readonly password: string,
+    private readonly createdAt: Date = new Date(),
+    private updatedAt: Date = new Date()
+  ) {}
+
+  // Getters
+  get getId(): string {
+    return this.id;
+  }
+
+  get getEmail(): string {
+    return this.email;
+  }
+
+  get getPassword(): string {
+    return this.password;
+  }
+
+  get getCreatedAt(): Date {
+    return this.createdAt;
+  }
+
+  get getUpdatedAt(): Date {
+    return this.updatedAt;
+  }
+
+  // Business rules
+  public updatePassword(newPassword: string): void {
+    this.password = newPassword;
+    this.updatedAt = new Date();
+  }
+
+  public updateEmail(newEmail: string): void {
+    this.email = newEmail;
+    this.updatedAt = new Date();
+  }
+
+  // Factory method
+  static create(email: string, password: string): User {
+    return new User(
+      crypto.randomUUID(),
+      email,
+      password
+    );
+  }
+
+  // Reconstruction method
+  static reconstruct(data: {
+    id: string;
+    email: string;
+    password: string;
+    createdAt: Date;
+    updatedAt: Date;
+  }): User {
+    return new User(
+      data.id,
+      data.email,
+      data.password,
+      data.createdAt,
+      data.updatedAt
+    );
+  }
+} 

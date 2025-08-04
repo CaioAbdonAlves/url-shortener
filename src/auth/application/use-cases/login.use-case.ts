@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { IUserRepository } from '../../domain/repositories/user.repository.interface';
+import { IUserRepository } from '../../../users/domain/repositories/user.repository.interface';
 import { IAuthService } from '../../domain/services/auth.service.interface';
 import { LoginDto, AuthResponseDto } from '../dtos/auth.dto';
 
