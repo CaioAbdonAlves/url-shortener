@@ -1,10 +1,10 @@
 export class User {
   constructor(
     private readonly id: string,
-    private readonly email: string,
-    private readonly password: string,
+    private email: string, // Removido readonly para permitir modificação
+    private password: string, // Removido readonly para permitir modificação
     private readonly createdAt: Date = new Date(),
-    private updatedAt: Date = new Date()
+    private updatedAt: Date = new Date(),
   ) {}
 
   // Getters
@@ -41,11 +41,7 @@ export class User {
 
   // Factory method
   static create(email: string, password: string): User {
-    return new User(
-      crypto.randomUUID(),
-      email,
-      password
-    );
+    return new User(crypto.randomUUID(), email, password);
   }
 
   // Reconstruction method
@@ -61,7 +57,7 @@ export class User {
       data.email,
       data.password,
       data.createdAt,
-      data.updatedAt
+      data.updatedAt,
     );
   }
-} 
+}
