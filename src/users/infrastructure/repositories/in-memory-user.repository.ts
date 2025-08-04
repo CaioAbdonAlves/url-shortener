@@ -16,14 +16,7 @@ export class InMemoryUserRepository implements IUserRepository {
     return user || null;
   }
 
-  async create(userData: { email: string; password: string }): Promise<User> {
-    const user = new User(
-      this.generateId(),
-      userData.email,
-      userData.password,
-      new Date(),
-      new Date(),
-    );
+  async create(user: User): Promise<User> {
     this.users.push(user);
     return user;
   }

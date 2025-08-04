@@ -20,21 +20,7 @@ export class InMemoryShortUrlRepository implements IShortUrlRepository {
     return this.shortUrls.filter(u => u.getUserId === userId && !u.isDeleted());
   }
 
-  async create(shortUrlData: {
-    originalUrl: string;
-    shortCode: string;
-    userId?: string | null;
-  }): Promise<ShortUrl> {
-    const shortUrl = new ShortUrl(
-      this.generateId(),
-      shortUrlData.originalUrl,
-      shortUrlData.shortCode,
-      shortUrlData.userId || null,
-      0,
-      new Date(),
-      new Date(),
-      null,
-    );
+  async create(shortUrl: ShortUrl): Promise<ShortUrl> {
     this.shortUrls.push(shortUrl);
     return shortUrl;
   }

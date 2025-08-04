@@ -8,16 +8,7 @@ export class RandomUrlShorteningService implements IUrlShorteningService {
   private readonly CODE_LENGTH = 6;
 
   async generateShortCode(): Promise<string> {
-    let code: string;
-    let attempts = 0;
-    const maxAttempts = 10;
-
-    do {
-      code = this.generateRandomCode();
-      attempts++;
-    } while (attempts < maxAttempts);
-
-    return code;
+    return this.generateRandomCode();
   }
 
   validateUrl(url: string): boolean {

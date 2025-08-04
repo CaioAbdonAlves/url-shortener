@@ -1,11 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UnauthorizedException } from '@nestjs/common';
 import { LoginUseCase } from './login.use-case';
-import { IUserRepository } from '../../users/domain/repositories/user.repository.interface';
-import { IAuthService } from '../../auth/domain/services/auth.service.interface';
-import { LoginDto } from '../dtos/auth.dto';
-import { User } from '../../users/domain/entities/user.entity';
-import { AUTH_SERVICE, USER_REPOSITORY } from '../../auth/domain/tokens/auth.tokens';
+import { IUserRepository } from '../../../users/domain/repositories/user.repository.interface';
+import { IAuthService } from '../../domain/services/auth.service.interface';
+import { LoginDto } from '../../application/dtos/auth.dto';
+import { User } from '../../../users/domain/entities/user.entity';
+import { USER_REPOSITORY } from '../../domain/tokens/auth.tokens';
+import { AUTH_SERVICE } from '../../domain/tokens/auth.tokens';
 
 describe('LoginUseCase', () => {
   let useCase: LoginUseCase;
@@ -42,70 +43,86 @@ describe('LoginUseCase', () => {
   });
 
   describe('execute', () => {
-    const loginDto: LoginDto = {
-      email: 'test@example.com',
-      password: 'password123',
-    };
-
-    const mockUser = new User(
-      'user-id',
-      'test@example.com',
-      'hashedPassword',
-      new Date(),
-      new Date(),
-    );
-
     it('should return token when credentials are valid', async () => {
-      const mockToken = 'jwt-token';
+      // Arrange
+      const loginDto: LoginDto = {
+        email: 'test@example.com',
+        password: 'password123',
+      };
+
+      const mockUser = new User(
+        'user-id',
+        'test@example.com',
+        'hashedPassword',
+        new Date(),
+        new Date()
+      );
+
+      const token = 'jwt-token';
 
       userRepository.findByEmail.mockResolvedValue(mockUser);
       authService.validatePassword.mockResolvedValue(true);
-      authService.generateToken.mockResolvedValue(mockToken);
+      authService.generateToken.mockResolvedValue(token);
 
+      // Act
       const result = await useCase.execute(loginDto);
 
+      // Assert
       expect(userRepository.findByEmail).toHaveBeenCalledWith(loginDto.email);
       expect(authService.validatePassword).toHaveBeenCalledWith(
         loginDto.password,
-        mockUser.getPassword(),
+        mockUser.getPassword,
       );
-      expect(authService.generateToken).toHaveBeenCalledWith({
-        id: mockUser.getId(),
-        email: mockUser.getEmail(),
-      });
+      expect(authService.generateToken).toHaveBeenCalledWith(mockUser.getId, mockUser.getEmail);
       expect(result).toEqual({
-        access_token: mockToken,
+        accessToken: token,
         user: {
-          id: mockUser.getId(),
-          email: mockUser.getEmail(),
+          id: mockUser.getId,
+          email: mockUser.getEmail,
         },
       });
     });
 
     it('should throw UnauthorizedException when user is not found', async () => {
+      // Arrange
+      const loginDto: LoginDto = {
+        email: 'nonexistent@example.com',
+        password: 'password123',
+      };
+
       userRepository.findByEmail.mockResolvedValue(null);
 
-      await expect(useCase.execute(loginDto)).rejects.toThrow(
-        UnauthorizedException,
-      );
-
+      // Act & Assert
+      await expect(useCase.execute(loginDto)).rejects.toThrow(UnauthorizedException);
       expect(userRepository.findByEmail).toHaveBeenCalledWith(loginDto.email);
       expect(authService.validatePassword).not.toHaveBeenCalled();
       expect(authService.generateToken).not.toHaveBeenCalled();
     });
 
     it('should throw UnauthorizedException when password is invalid', async () => {
+      // Arrange
+      const loginDto: LoginDto = {
+        email: 'test@example.com',
+        password: 'wrongpassword',
+      };
+
+      const mockUser = new User(
+        'user-id',
+        'test@example.com',
+        'hashedPassword',
+        new Date(),
+        new Date()
+      );
+
       userRepository.findByEmail.mockResolvedValue(mockUser);
       authService.validatePassword.mockResolvedValue(false);
 
-      await expect(useCase.execute(loginDto)).rejects.toThrow(
-        UnauthorizedException,
-      );
-
+      // Act & Assert
+      await expect(useCase.execute(loginDto)).rejects.toThrow(UnauthorizedException);
       expect(userRepository.findByEmail).toHaveBeenCalledWith(loginDto.email);
       expect(authService.validatePassword).toHaveBeenCalledWith(
         loginDto.password,
-        mockUser.getPassword(),
+        mockUser.getPassword,
       );
       expect(authService.generateToken).not.toHaveBeenCalled();
     });

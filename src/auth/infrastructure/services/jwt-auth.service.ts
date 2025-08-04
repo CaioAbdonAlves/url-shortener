@@ -21,11 +21,11 @@ export class JwtAuthService implements IAuthService {
 
   async generateToken(userId: string, email: string): Promise<string> {
     const payload = { sub: userId, email };
-    return this.jwtService.signAsync(payload);
+    return this.jwtService.sign(payload);
   }
 
   async verifyToken(token: string): Promise<{ userId: string; email: string }> {
-    const payload = await this.jwtService.verifyAsync(token);
+    const payload = await this.jwtService.verify(token);
     return {
       userId: payload.sub,
       email: payload.email,

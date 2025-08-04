@@ -1,9 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { NotFoundException } from '@nestjs/common';
 import { RedirectUrlUseCase } from './redirect-url.use-case';
-import { IShortUrlRepository } from '../../url-shortener/domain/repositories/short-url.repository.interface';
-import { ShortUrl } from '../../url-shortener/domain/entities/short-url.entity';
-import { SHORT_URL_REPOSITORY } from '../../url-shortener/domain/tokens/url-shortener.tokens';
+import { IShortUrlRepository } from '../../domain/repositories/short-url.repository.interface';
+import { ShortUrl } from '../../domain/entities/short-url.entity';
+import { SHORT_URL_REPOSITORY } from '../../domain/tokens/url-shortener.tokens';
 
 describe('RedirectUrlUseCase', () => {
   let useCase: RedirectUrlUseCase;
@@ -30,56 +29,82 @@ describe('RedirectUrlUseCase', () => {
   });
 
   describe('execute', () => {
-    const shortCode = 'abc123';
-    const mockShortUrl = new ShortUrl(
-      'url-id',
-      'https://example.com',
-      shortCode,
-      'user-id',
-      5,
-      new Date(),
-      new Date(),
-      null,
-    );
-
     it('should return original URL and increment clicks when short code exists', async () => {
+      // Arrange
+      const shortCode = 'abc123';
+      const originalUrl = 'https://example.com/very/long/url';
+
+      const mockShortUrl = ShortUrl.create(originalUrl, shortCode, 'user-id');
+
       shortUrlRepository.findByShortCode.mockResolvedValue(mockShortUrl);
       shortUrlRepository.incrementClicks.mockResolvedValue(undefined);
 
+      // Act
       const result = await useCase.execute(shortCode);
 
-      expect(shortUrlRepository.findByShortCode).toHaveBeenCalledWith(shortCode);
-      expect(shortUrlRepository.incrementClicks).toHaveBeenCalledWith(mockShortUrl.getId());
-      expect(result).toBe(mockShortUrl.getOriginalUrl());
+      // Assert
+      expect(shortUrlRepository.findByShortCode).toHaveBeenCalledWith(
+        shortCode,
+      );
+      expect(shortUrlRepository.incrementClicks).toHaveBeenCalledWith(
+        mockShortUrl.getId,
+      );
+      expect(result).toBe(originalUrl);
     });
 
-    it('should throw NotFoundException when short code does not exist', async () => {
+    it('should throw error when short code does not exist', async () => {
+      // Arrange
+      const shortCode = 'nonexistent';
+
       shortUrlRepository.findByShortCode.mockResolvedValue(null);
 
-      await expect(useCase.execute(shortCode)).rejects.toThrow(NotFoundException);
-
-      expect(shortUrlRepository.findByShortCode).toHaveBeenCalledWith(shortCode);
+      // Act & Assert
+      await expect(useCase.execute(shortCode)).rejects.toThrow('URL not found');
+      expect(shortUrlRepository.findByShortCode).toHaveBeenCalledWith(
+        shortCode,
+      );
       expect(shortUrlRepository.incrementClicks).not.toHaveBeenCalled();
     });
 
-    it('should throw NotFoundException when URL is deleted', async () => {
-      const deletedShortUrl = new ShortUrl(
-        'url-id',
-        'https://example.com',
-        shortCode,
-        'user-id',
-        5,
-        new Date(),
-        new Date(),
-        new Date(), // deletedAt is set
+    it('should throw error when short URL is deleted', async () => {
+      // Arrange
+      const shortCode = 'deleted';
+      const originalUrl = 'https://example.com';
+
+      const mockShortUrl = ShortUrl.create(originalUrl, shortCode, 'user-id');
+
+      // Simulate deleted URL
+      mockShortUrl.softDelete();
+
+      shortUrlRepository.findByShortCode.mockResolvedValue(mockShortUrl);
+
+      // Act & Assert
+      await expect(useCase.execute(shortCode)).rejects.toThrow(
+        'URL has been deleted',
       );
-
-      shortUrlRepository.findByShortCode.mockResolvedValue(deletedShortUrl);
-
-      await expect(useCase.execute(shortCode)).rejects.toThrow(NotFoundException);
-
-      expect(shortUrlRepository.findByShortCode).toHaveBeenCalledWith(shortCode);
+      expect(shortUrlRepository.findByShortCode).toHaveBeenCalledWith(
+        shortCode,
+      );
       expect(shortUrlRepository.incrementClicks).not.toHaveBeenCalled();
+    });
+
+    it('should increment clicks count when redirecting', async () => {
+      // Arrange
+      const shortCode = 'abc123';
+      const originalUrl = 'https://example.com';
+
+      const mockShortUrl = ShortUrl.create(originalUrl, shortCode, 'user-id');
+
+      shortUrlRepository.findByShortCode.mockResolvedValue(mockShortUrl);
+      shortUrlRepository.incrementClicks.mockResolvedValue(undefined);
+
+      // Act
+      await useCase.execute(shortCode);
+
+      // Assert
+      expect(shortUrlRepository.incrementClicks).toHaveBeenCalledWith(
+        mockShortUrl.getId,
+      );
     });
   });
-}); 
+});

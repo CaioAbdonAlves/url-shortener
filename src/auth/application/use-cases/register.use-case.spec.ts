@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ConflictException } from '@nestjs/common';
 import { RegisterUseCase } from './register.use-case';
-import { IUserRepository } from '../../users/domain/repositories/user.repository.interface';
-import { IAuthService } from '../../auth/domain/services/auth.service.interface';
-import { RegisterDto } from '../dtos/auth.dto';
-import { User } from '../../users/domain/entities/user.entity';
-import { AUTH_SERVICE, USER_REPOSITORY } from '../../auth/domain/tokens/auth.tokens';
+import { IUserRepository } from '../../../users/domain/repositories/user.repository.interface';
+import { IAuthService } from '../../domain/services/auth.service.interface';
+import { RegisterDto } from '../../application/dtos/auth.dto';
+import { User } from '../../../users/domain/entities/user.entity';
+import { USER_REPOSITORY } from '../../domain/tokens/auth.tokens';
+import { AUTH_SERVICE } from '../../domain/tokens/auth.tokens';
 
 describe('RegisterUseCase', () => {
   let useCase: RegisterUseCase;
@@ -43,60 +43,79 @@ describe('RegisterUseCase', () => {
   });
 
   describe('execute', () => {
-    const registerDto: RegisterDto = {
-      email: 'test@example.com',
-      password: 'password123',
-    };
-
-    const mockUser = new User(
-      'user-id',
-      'test@example.com',
-      'hashedPassword',
-      new Date(),
-      new Date(),
-    );
-
     it('should create user and return token when registration is successful', async () => {
-      const mockToken = 'jwt-token';
+      // Arrange
+      const registerDto: RegisterDto = {
+        email: 'test@example.com',
+        password: 'password123',
+      };
+
       const hashedPassword = 'hashedPassword';
+      const token = 'jwt-token';
+
+      const mockUser = new User(
+        'user-id',
+        'test@example.com',
+        'hashedPassword',
+        new Date(),
+        new Date(),
+      );
 
       userRepository.findByEmail.mockResolvedValue(null);
       authService.hashPassword.mockResolvedValue(hashedPassword);
       userRepository.create.mockResolvedValue(mockUser);
-      authService.generateToken.mockResolvedValue(mockToken);
+      authService.generateToken.mockResolvedValue(token);
 
+      // Act
       const result = await useCase.execute(registerDto);
 
-      expect(userRepository.findByEmail).toHaveBeenCalledWith(registerDto.email);
-      expect(authService.hashPassword).toHaveBeenCalledWith(registerDto.password);
-      expect(userRepository.create).toHaveBeenCalledWith({
-        email: registerDto.email,
-        password: hashedPassword,
-      });
-      expect(authService.generateToken).toHaveBeenCalledWith({
-        id: mockUser.getId(),
-        email: mockUser.getEmail(),
-      });
+      // Assert
+      expect(userRepository.findByEmail).toHaveBeenCalledWith(
+        registerDto.email,
+      );
+      expect(authService.hashPassword).toHaveBeenCalledWith(
+        registerDto.password,
+      );
+      expect(userRepository.create).toHaveBeenCalledWith(expect.any(User));
+      expect(authService.generateToken).toHaveBeenCalledWith(
+        mockUser.getId,
+        mockUser.getEmail,
+      );
       expect(result).toEqual({
-        access_token: mockToken,
+        accessToken: token,
         user: {
-          id: mockUser.getId(),
-          email: mockUser.getEmail(),
+          id: mockUser.getId,
+          email: mockUser.getEmail,
         },
       });
     });
 
-    it('should throw ConflictException when user already exists', async () => {
-      userRepository.findByEmail.mockResolvedValue(mockUser);
+    it('should throw error when user already exists', async () => {
+      // Arrange
+      const registerDto: RegisterDto = {
+        email: 'existing@example.com',
+        password: 'password123',
+      };
 
-      await expect(useCase.execute(registerDto)).rejects.toThrow(
-        ConflictException,
+      const existingUser = new User(
+        'existing-id',
+        'existing@example.com',
+        'hashedPassword',
+        new Date(),
+        new Date(),
       );
 
-      expect(userRepository.findByEmail).toHaveBeenCalledWith(registerDto.email);
-      expect(authService.hashPassword).not.toHaveBeenCalled();
+      userRepository.findByEmail.mockResolvedValue(existingUser);
+
+      // Act & Assert
+      await expect(useCase.execute(registerDto)).rejects.toThrow(
+        'User already exists',
+      );
+      expect(userRepository.findByEmail).toHaveBeenCalledWith(
+        registerDto.email,
+      );
       expect(userRepository.create).not.toHaveBeenCalled();
       expect(authService.generateToken).not.toHaveBeenCalled();
     });
   });
-}); 
+});

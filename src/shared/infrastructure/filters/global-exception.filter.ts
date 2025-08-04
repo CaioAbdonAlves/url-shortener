@@ -47,9 +47,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const errorResponse = {
       statusCode: status,
       message,
-      error,
       timestamp: new Date().toISOString(),
-      path: request.url,
     };
 
     this.logger.error(

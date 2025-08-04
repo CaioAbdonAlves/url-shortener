@@ -45,7 +45,7 @@ describe('AuthController', () => {
       };
 
       const expectedResponse = {
-        access_token: 'jwt-token',
+        accessToken: 'jwt-token',
         user: {
           id: 'user-id',
           email: 'test@example.com',
@@ -69,7 +69,7 @@ describe('AuthController', () => {
       };
 
       const expectedResponse = {
-        access_token: 'jwt-token',
+        accessToken: 'jwt-token',
         user: {
           id: 'user-id',
           email: 'new@example.com',
