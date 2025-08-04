@@ -1,73 +1,328 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# URL Shortener API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Uma API REST completa para encurtamento de URLs construída com NestJS, TypeScript e PostgreSQL, seguindo os princípios de Clean Architecture, Domain-Driven Design (DDD) e SOLID.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🚀 Funcionalidades
 
-## Description
+- **Encurtamento de URLs**: Gera códigos curtos de até 6 caracteres
+- **Autenticação JWT**: Sistema completo de registro e login
+- **URLs Personalizadas**: Suporte a códigos customizados
+- **Contagem de Clicks**: Rastreamento de acessos às URLs
+- **Soft Delete**: Exclusão lógica com preservação de dados
+- **Swagger/OpenAPI**: Documentação automática da API
+- **Observabilidade**: Logs estruturados e métricas
+- **Testes Unitários**: Cobertura completa com Jest
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🏗️ Arquitetura
 
-## Installation
+O projeto segue os princípios de **Clean Architecture** e **Domain-Driven Design**:
 
-```bash
-$ npm install
+```
+src/
+├── auth/                    # Módulo de autenticação
+│   ├── domain/             # Regras de negócio
+│   ├── application/        # Casos de uso
+│   ├── infrastructure/     # Implementações externas
+│   └── presentation/       # Controllers e DTOs
+├── users/                  # Módulo de usuários
+│   ├── domain/             # Entidades e regras
+│   └── infrastructure/     # Repositórios
+├── url-shortener/          # Módulo de encurtamento
+│   ├── domain/             # Entidades e serviços
+│   ├── application/        # Casos de uso
+│   ├── infrastructure/     # Repositórios e serviços
+│   └── presentation/       # Controllers
+└── shared/                 # Componentes compartilhados
+    └── infrastructure/     # Filtros e interceptors
 ```
 
-## Running the app
+## 🛠️ Tecnologias
+
+- **Framework**: NestJS 10.x
+- **Linguagem**: TypeScript 5.x
+- **Banco de Dados**: PostgreSQL 15
+- **ORM**: Prisma 6.x
+- **Autenticação**: JWT + bcryptjs
+- **Validação**: class-validator + class-transformer
+- **Documentação**: Swagger/OpenAPI
+- **Testes**: Jest + Supertest
+- **Containerização**: Docker + Docker Compose
+- **Observabilidade**: Winston + Prometheus (planejado)
+
+## 📋 Pré-requisitos
+
+- Node.js 18+ 
+- Docker e Docker Compose
+- Git
+
+## 🚀 Instalação e Configuração
+
+### 1. Clone o repositório
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+git clone <repository-url>
+cd url-shortener
 ```
 
-## Test
+### 2. Configure as variáveis de ambiente
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+cp config.example.env .env
 ```
 
-## Support
+Edite o arquivo `.env` com suas configurações:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```env
+# Database
+DATABASE_URL="postgresql://user:password@localhost:55432/url_shortener"
 
-## Stay in touch
+# JWT
+JWT_SECRET="your-super-secret-key"
+JWT_EXPIRES_IN="24h"
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+# Application
+PORT=3000
+BASE_URL="http://localhost:3000"
 
-## License
+# Redis (opcional)
+REDIS_URL="redis://localhost:6378"
 
-Nest is [MIT licensed](LICENSE).
+# Observability
+ENABLE_LOGGING=true
+ENABLE_METRICS=true
+ENABLE_TRACING=true
+```
+
+### 3. Inicie os serviços com Docker Compose
+
+```bash
+docker-compose up -d
+```
+
+### 4. Instale as dependências
+
+```bash
+npm install
+```
+
+### 5. Execute as migrações do banco
+
+```bash
+npx prisma migrate dev
+```
+
+### 6. Inicie a aplicação
+
+```bash
+# Desenvolvimento
+npm run start:dev
+
+# Produção
+npm run start:prod
+```
+
+## 📚 Documentação da API
+
+A documentação Swagger está disponível em:
+- **Desenvolvimento**: http://localhost:3000/api
+- **Produção**: https://your-domain.com/api
+
+## 🔧 Endpoints
+
+### Autenticação
+
+#### POST `/auth/register`
+Registra um novo usuário.
+
+```json
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+```
+
+#### POST `/auth/login`
+Realiza login do usuário.
+
+```json
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+```
+
+### URLs
+
+#### POST `/urls/shorten`
+Encurta uma URL (com ou sem autenticação).
+
+```json
+{
+  "originalUrl": "https://example.com/very-long-url",
+  "customShortCode": "custom" // opcional
+}
+```
+
+#### GET `/urls`
+Lista URLs do usuário autenticado.
+
+#### PUT `/urls/:id`
+Atualiza uma URL (apenas proprietário).
+
+```json
+{
+  "originalUrl": "https://new-url.com"
+}
+```
+
+#### DELETE `/urls/:id`
+Remove uma URL (soft delete, apenas proprietário).
+
+### Redirecionamento
+
+#### GET `/:shortCode`
+Redireciona para a URL original e incrementa contador.
+
+## 🧪 Testes
+
+### Executar todos os testes
+
+```bash
+npm test
+```
+
+### Executar testes com cobertura
+
+```bash
+npm run test:cov
+```
+
+### Executar testes em modo watch
+
+```bash
+npm run test:watch
+```
+
+### Executar testes de integração
+
+```bash
+npm run test:e2e
+```
+
+## 🐳 Docker
+
+### Construir imagem
+
+```bash
+docker build -t url-shortener .
+```
+
+### Executar com Docker Compose
+
+```bash
+docker-compose up -d
+```
+
+## 📊 Monitoramento
+
+### Logs
+A aplicação utiliza Winston para logging estruturado com diferentes níveis:
+- `error`: Erros da aplicação
+- `warn`: Avisos importantes
+- `info`: Informações gerais
+- `debug`: Informações detalhadas
+
+### Métricas (Planejado)
+- Prometheus para coleta de métricas
+- Grafana para visualização
+- Métricas customizadas de negócio
+
+### Tracing (Planejado)
+- Jaeger para distributed tracing
+- OpenTelemetry para instrumentação
+
+## 🔒 Segurança
+
+- **Autenticação**: JWT com expiração configurável
+- **Senhas**: Hash com bcrypt (salt rounds: 10)
+- **Validação**: class-validator para validação de entrada
+- **CORS**: Configurado para desenvolvimento
+- **Rate Limiting**: Implementação planejada
+
+## 🚀 Deploy
+
+### Variáveis de Ambiente para Produção
+
+```env
+NODE_ENV=production
+DATABASE_URL="postgresql://user:password@host:5432/database"
+JWT_SECRET="super-secret-production-key"
+BASE_URL="https://your-domain.com"
+```
+
+### Estratégias de Deploy
+
+1. **Docker**: Imagem otimizada para produção
+2. **Kubernetes**: Manifests para orquestração
+3. **Cloud Providers**: AWS, GCP, Azure
+4. **CI/CD**: GitHub Actions, GitLab CI
+
+## 📈 Escalabilidade
+
+### Escalabilidade Vertical
+- Otimização de queries
+- Índices de banco de dados
+- Cache com Redis
+- Connection pooling
+
+### Escalabilidade Horizontal (Planejado)
+- Load balancer
+- Múltiplas instâncias
+- Database sharding
+- Microserviços
+
+## 🤝 Contribuição
+
+1. Fork o projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
+
+## 📝 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+## 🆘 Suporte
+
+Para suporte, envie um email para alvesabdon431@gmail.com ou abra uma issue no GitHub.
+
+## 🔄 Roadmap
+
+- [ ] Implementação de métricas com Prometheus
+- [ ] Distributed tracing com Jaeger
+- [ ] Rate limiting
+- [ ] Cache com Redis
+- [ ] Microserviços
+- [ ] Kubernetes manifests
+- [ ] CI/CD pipeline
+- [ ] Monitoramento avançado
+- [ ] API Gateway
+- [ ] Multi-tenancy
+
+## 📄 Changelog
+
+### v0.1.0 (2024-08-04)
+- ✅ Implementação inicial da API
+- ✅ Sistema de autenticação JWT
+- ✅ Encurtamento de URLs
+- ✅ CRUD de URLs para usuários autenticados
+- ✅ Contagem de clicks
+- ✅ Soft delete
+- ✅ Documentação Swagger
+- ✅ Testes unitários
+- ✅ Docker e Docker Compose
+- ✅ Logging estruturado
+- ✅ Tratamento de erros global
+- ✅ Validação de entrada
+- ✅ Clean Architecture e DDD
