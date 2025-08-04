@@ -1,38 +1,49 @@
-import { z } from 'zod';
+import { IsEmail, IsString, MinLength } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
-// Validation schemas
-export const LoginDtoSchema = z.object({
-  email: z.string().email('Invalid email format'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-});
-
-export const RegisterDtoSchema = z
-  .object({
-    email: z.string().email('Invalid email format'),
-    password: z.string().min(6, 'Password must be at least 6 characters'),
-    confirmPassword: z
-      .string()
-      .min(6, 'Password must be at least 6 characters'),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ['confirmPassword'],
-  });
-
-// DTOs
 export class LoginDto {
+  @ApiProperty({
+    description: 'User email',
+    example: 'user@example.com',
+  })
+  @IsEmail()
   email: string;
+
+  @ApiProperty({
+    description: 'User password',
+    example: 'password123',
+  })
+  @IsString()
+  @MinLength(6)
   password: string;
 }
 
 export class RegisterDto {
+  @ApiProperty({
+    description: 'User email',
+    example: 'user@example.com',
+  })
+  @IsEmail()
   email: string;
+
+  @ApiProperty({
+    description: 'User password',
+    example: 'password123',
+  })
+  @IsString()
+  @MinLength(6)
   password: string;
-  confirmPassword: string;
 }
 
 export class AuthResponseDto {
+  @ApiProperty({
+    description: 'JWT access token',
+  })
   accessToken: string;
+
+  @ApiProperty({
+    description: 'User information',
+  })
   user: {
     id: string;
     email: string;

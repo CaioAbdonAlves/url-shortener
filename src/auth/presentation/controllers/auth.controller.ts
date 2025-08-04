@@ -1,16 +1,12 @@
-import {
-  Controller,
-  Post,
-  Body,
-  HttpCode,
-  HttpStatus,
-  ValidationPipe,
-  UsePipes,
-} from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { LoginUseCase } from '../../application/use-cases/login.use-case';
 import { RegisterUseCase } from '../../application/use-cases/register.use-case';
-import { LoginDto, RegisterDto, AuthResponseDto } from '../../application/dtos/auth.dto';
+import {
+  LoginDto,
+  RegisterDto,
+  AuthResponseDto,
+} from '../../application/dtos/auth.dto';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -22,7 +18,6 @@ export class AuthController {
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  @UsePipes(new ValidationPipe({ transform: true }))
   @ApiOperation({ summary: 'User login' })
   @ApiResponse({
     status: 200,
@@ -39,7 +34,6 @@ export class AuthController {
 
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
-  @UsePipes(new ValidationPipe({ transform: true }))
   @ApiOperation({ summary: 'User registration' })
   @ApiResponse({
     status: 201,
@@ -53,4 +47,4 @@ export class AuthController {
   async register(@Body() registerDto: RegisterDto): Promise<AuthResponseDto> {
     return this.registerUseCase.execute(registerDto);
   }
-} 
+}

@@ -7,8 +7,8 @@ import { RegisterUseCase } from './application/use-cases/register.use-case';
 import { JwtAuthService } from './infrastructure/services/jwt-auth.service';
 import { JwtAuthGuard } from './presentation/guards/jwt-auth.guard';
 import { PrismaUserRepository } from '../users/infrastructure/repositories/prisma-user.repository';
-import { IUserRepository } from '../users/domain/repositories/user.repository.interface';
-import { IAuthService } from './domain/services/auth.service.interface';
+import { AUTH_SERVICE, USER_REPOSITORY } from './domain/tokens/auth.tokens';
+import { PrismaService } from '../shared/infrastructure/prisma/prisma.service';
 
 @Module({
   imports: [
@@ -28,15 +28,16 @@ import { IAuthService } from './domain/services/auth.service.interface';
     LoginUseCase,
     RegisterUseCase,
     JwtAuthGuard,
+    PrismaService,
     {
-      provide: IAuthService,
+      provide: AUTH_SERVICE,
       useClass: JwtAuthService,
     },
     {
-      provide: IUserRepository,
+      provide: USER_REPOSITORY,
       useClass: PrismaUserRepository,
     },
   ],
-  exports: [JwtAuthGuard, IAuthService],
+  exports: [JwtAuthGuard, AUTH_SERVICE, JwtModule],
 })
-export class AuthModule {} 
+export class AuthModule {}
