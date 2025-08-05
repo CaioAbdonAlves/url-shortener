@@ -3,6 +3,7 @@ import { RedirectUrlUseCase } from './redirect-url.use-case';
 import { IShortUrlRepository } from '../../domain/repositories/short-url.repository.interface';
 import { ShortUrl } from '../../domain/entities/short-url.entity';
 import { SHORT_URL_REPOSITORY } from '../../domain/tokens/url-shortener.tokens';
+import { PrometheusService } from '../../../shared/infrastructure/metrics/prometheus.service';
 
 describe('RedirectUrlUseCase', () => {
   let useCase: RedirectUrlUseCase;
@@ -20,6 +21,13 @@ describe('RedirectUrlUseCase', () => {
         {
           provide: SHORT_URL_REPOSITORY,
           useValue: mockShortUrlRepository,
+        },
+        {
+          provide: PrometheusService,
+          useValue: {
+            incrementUrlRedirected: jest.fn(),
+            incrementError: jest.fn(),
+          },
         },
       ],
     }).compile();

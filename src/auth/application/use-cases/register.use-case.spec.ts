@@ -4,8 +4,8 @@ import { IUserRepository } from '../../../users/domain/repositories/user.reposit
 import { IAuthService } from '../../domain/services/auth.service.interface';
 import { RegisterDto } from '../../application/dtos/auth.dto';
 import { User } from '../../../users/domain/entities/user.entity';
-import { USER_REPOSITORY } from '../../domain/tokens/auth.tokens';
-import { AUTH_SERVICE } from '../../domain/tokens/auth.tokens';
+import { USER_REPOSITORY, AUTH_SERVICE } from '../../domain/tokens/auth.tokens';
+import { PrometheusService } from '../../../shared/infrastructure/metrics/prometheus.service';
 
 describe('RegisterUseCase', () => {
   let useCase: RegisterUseCase;
@@ -33,6 +33,12 @@ describe('RegisterUseCase', () => {
         {
           provide: AUTH_SERVICE,
           useValue: mockAuthService,
+        },
+        {
+          provide: PrometheusService,
+          useValue: {
+            incrementRegistration: jest.fn(),
+          },
         },
       ],
     }).compile();

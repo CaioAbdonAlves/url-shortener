@@ -19,6 +19,7 @@ import {
   ApiResponse,
   ApiBearerAuth,
 } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import { ShortenUrlUseCase } from '../../application/use-cases/shorten-url.use-case';
 import { GetUrlsByUserUseCase } from '../../application/use-cases/get-urls-by-user.use-case';
 import { RedirectUrlUseCase } from '../../application/use-cases/redirect-url.use-case';
@@ -46,6 +47,7 @@ export class UrlShortenerController {
 
   @Post('shorten')
   @HttpCode(HttpStatus.CREATED)
+  @Throttle({ default: { limit: 10, ttl: 60000 } }) // 10 URLs por minuto
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Shorten a URL' })
   @ApiResponse({

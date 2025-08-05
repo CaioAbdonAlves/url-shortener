@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { GlobalExceptionFilter } from './global-exception.filter';
+import { PrometheusService } from '../metrics/prometheus.service';
 
 describe('GlobalExceptionFilter', () => {
   let filter: GlobalExceptionFilter;
@@ -9,7 +10,15 @@ describe('GlobalExceptionFilter', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [GlobalExceptionFilter],
+      providers: [
+        GlobalExceptionFilter,
+        {
+          provide: PrometheusService,
+          useValue: {
+            incrementError: jest.fn(),
+          },
+        },
+      ],
     }).compile();
 
     filter = module.get<GlobalExceptionFilter>(GlobalExceptionFilter);

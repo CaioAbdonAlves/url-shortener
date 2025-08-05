@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { UrlShortenerModule } from './url-shortener/url-shortener.module';
 import { MetricsModule } from './shared/infrastructure/metrics/metrics.module';
 import { TracingModule } from './shared/infrastructure/tracing/tracing.module';
+import { AppThrottlerModule } from './shared/infrastructure/throttler/throttler.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { TracingModule } from './shared/infrastructure/tracing/tracing.module';
     UrlShortenerModule,
     MetricsModule,
     TracingModule,
+    AppThrottlerModule,
   ],
   providers: [PrismaService],
 })

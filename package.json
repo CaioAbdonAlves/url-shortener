@@ -17,7 +17,12 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate deploy",
+    "prisma:studio": "prisma studio",
+    "docker:build": "docker build -t url-shortener .",
+    "docker:run": "docker run -p 3000:3000 url-shortener"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -28,6 +33,7 @@
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/swagger": "^7.3.0",
     "@nestjs/terminus": "^10.2.0",
+    "@nestjs/throttler": "^6.4.0",
     "@opentelemetry/exporter-jaeger": "^1.21.0",
     "@opentelemetry/instrumentation": "^0.47.0",
     "@opentelemetry/instrumentation-express": "^0.33.0",

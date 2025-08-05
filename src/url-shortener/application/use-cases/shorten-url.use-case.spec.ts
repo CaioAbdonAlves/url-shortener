@@ -4,8 +4,11 @@ import { IShortUrlRepository } from '../../domain/repositories/short-url.reposit
 import { IUrlShorteningService } from '../../domain/services/url-shortening.service.interface';
 import { ShortenUrlDto } from '../dtos/url-shortener.dto';
 import { ShortUrl } from '../../domain/entities/short-url.entity';
-import { SHORT_URL_REPOSITORY } from '../../domain/tokens/url-shortener.tokens';
-import { URL_SHORTENING_SERVICE } from '../../domain/tokens/url-shortener.tokens';
+import {
+  SHORT_URL_REPOSITORY,
+  URL_SHORTENING_SERVICE,
+} from '../../domain/tokens/url-shortener.tokens';
+import { PrometheusService } from '../../../shared/infrastructure/metrics/prometheus.service';
 
 describe('ShortenUrlUseCase', () => {
   let useCase: ShortenUrlUseCase;
@@ -37,6 +40,12 @@ describe('ShortenUrlUseCase', () => {
         {
           provide: URL_SHORTENING_SERVICE,
           useValue: mockUrlShorteningService,
+        },
+        {
+          provide: PrometheusService,
+          useValue: {
+            incrementUrlCreated: jest.fn(),
+          },
         },
       ],
     }).compile();

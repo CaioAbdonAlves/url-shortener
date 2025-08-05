@@ -1,5 +1,6 @@
 import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import { LoginUseCase } from '../../application/use-cases/login.use-case';
 import { RegisterUseCase } from '../../application/use-cases/register.use-case';
 import {
@@ -18,6 +19,7 @@ export class AuthController {
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { limit: 5, ttl: 60000 } }) // 5 tentativas por minuto
   @ApiOperation({ summary: 'User login' })
   @ApiResponse({
     status: 200,
@@ -34,6 +36,7 @@ export class AuthController {
 
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
+  @Throttle({ default: { limit: 3, ttl: 300000 } }) // 3 registros por 5 minutos
   @ApiOperation({ summary: 'User registration' })
   @ApiResponse({
     status: 201,
