@@ -41,7 +41,20 @@ export class User {
 
   // Factory method
   static create(email: string, password: string): User {
-    return new User(crypto.randomUUID(), email, password);
+    // Use crypto.randomUUID() if available, otherwise fallback to Math.random()
+    const generateId = () => {
+      if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+        return crypto.randomUUID();
+      }
+      // Fallback for environments without crypto.randomUUID
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const r = Math.random() * 16 | 0;
+        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    };
+    
+    return new User(generateId(), email, password);
   }
 
   // Reconstruction method
