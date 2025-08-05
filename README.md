@@ -2,7 +2,16 @@
 
 Uma API REST completa para encurtamento de URLs construída com NestJS, TypeScript e PostgreSQL, seguindo os princípios de Clean Architecture, Domain-Driven Design (DDD) e SOLID.
 
-## 🚀 Funcionalidades
+## 🔗 URLs da API
+
+### 🚀 **Produção (Railway)**
+- **Swagger UI**: `https://url-shortener-production-8527.up.railway.app/api`
+- **Métricas Prometheus**: `https://url-shortener-production-8527.up.railway.app/metrics`
+- **API Base**: `https://url-shortener-production-8527.up.railway.app`
+
+### 🏠 **Local**
+- **Swagger UI**: `http://localhost:3000/api`
+- **Métricas Prometheus**: `http://localhost:3000/metrics`
 
 ### ✅ **Funcionalidades Core**
 - **Encurtamento de URLs**: Gera códigos curtos de até 6 caracteres
@@ -58,11 +67,16 @@ Uma API REST completa para encurtamento de URLs construída com NestJS, TypeScri
 - **Structured Logging**: Logs em formato JSON
 - **Error Tracking**: Captura e monitoramento de erros
 
-### ✅ **Performance & Escalabilidade**
-- **Response Time Tracking**: Monitoramento de performance
-- **Database Optimization**: Queries otimizadas
-- **Memory Management**: Gerenciamento eficiente de recursos
-- **Horizontal Scaling**: Preparado para escalar
+### 🌐 **Endpoints Implementados** ✅
+- ✅ **POST /auth/register**: Registro de usuários
+- ✅ **POST /auth/login**: Login de usuários
+- ✅ **POST /urls/shorten**: Criar URL encurtada
+- ✅ **GET /urls**: Listar URLs do usuário
+- ✅ **PUT /urls/:id**: Atualizar URL
+- ✅ **DELETE /urls/:id**: Deletar URL (soft delete)
+- ✅ **GET /:shortCode**: Redirecionamento
+- ✅ **GET /metrics**: Métricas Prometheus
+- ✅ **GET /api**: Documentação Swagger
 
 ### ✅ **Developer Experience**
 - **TypeScript**: Type safety completo
@@ -183,7 +197,7 @@ npm run start:prod
 
 A documentação Swagger está disponível em:
 - **Desenvolvimento**: http://localhost:3000/api
-- **Produção**: https://your-domain.com/api
+- **Produção**: https://url-shortener-production-8527.up.railway.app/api
 
 ## 🔧 Endpoints
 
@@ -247,6 +261,12 @@ O projeto implementa múltiplas camadas de observabilidade que podem ser ativada
 
 ### Métricas (Prometheus + Grafana)
 
+#### 🚀 **Produção (Railway)**
+- **Endpoint**: `https://url-shortener-production-8527.up.railway.app/metrics`
+- **Swagger UI**: `https://url-shortener-production-8527.up.railway.app/api`
+- **API Base**: `https://url-shortener-production-8527.up.railway.app`
+
+#### 🏠 **Local**
 - **Endpoint**: `http://localhost:3000/metrics`
 - **Prometheus**: `http://localhost:9090`
 - **Grafana**: `http://localhost:3001` (admin/admin)
@@ -393,14 +413,14 @@ Para suporte, envie um email para alvesabdon431@gmail.com ou abra uma issue no G
 
 ## 🔄 Roadmap
 
-- [ ] Implementação de métricas com Prometheus
-- [ ] Distributed tracing com Jaeger
-- [ ] Rate limiting
-- [ ] Cache com Redis
+- ✅ Implementação de métricas com Prometheus
+- ✅ Distributed tracing com Jaeger
+- ✅ Rate limiting
+- ✅ Cache com Redis
 - [ ] Microserviços
 - [ ] Kubernetes manifests
-- [ ] CI/CD pipeline
-- [ ] Monitoramento avançado
+- ✅ CI/CD pipeline
+- ✅ Monitoramento avançado
 - [ ] API Gateway
 - [ ] Multi-tenancy
 
