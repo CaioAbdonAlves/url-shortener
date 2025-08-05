@@ -26,6 +26,7 @@ export class LoggingInterceptor implements NestInterceptor {
       `${method} ${url} - User: ${user?.email || 'anonymous'} - User-Agent: ${userAgent}`,
     );
 
+    const body = request.body;
     if (Object.keys(body || {}).length > 0) {
       this.logger.debug(`Request body: ${JSON.stringify(body)}`);
     }

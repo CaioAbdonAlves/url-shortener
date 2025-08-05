@@ -32,7 +32,7 @@ import {
   UrlListResponseDto,
 } from '../../application/dtos/url-shortener.dto';
 import { JwtAuthGuard } from '../../../auth/presentation/guards/jwt-auth.guard';
-import { RequestWithUser } from '../../../auth/presentation/interfaces/request-with-user.interface';
+import { Request } from 'express';
 
 @ApiTags('URL Shortener')
 @Controller('urls')
@@ -61,7 +61,7 @@ export class UrlShortenerController {
   })
   async shortenUrl(
     @Body() shortenUrlDto: ShortenUrlDto,
-    @Req() req: RequestWithUser,
+    @Req() req: Request,
   ): Promise<ShortUrlResponseDto> {
     // Extract user ID from token if present
     const authHeader = req.headers.authorization;
@@ -115,8 +115,8 @@ export class UrlShortenerController {
     status: 401,
     description: 'Unauthorized',
   })
-  async getUserUrls(@Req() req: RequestWithUser): Promise<UrlListResponseDto> {
-    return this.getUrlsByUserUseCase.execute(req.user.id);
+  async getUserUrls(@Req() req: Request): Promise<UrlListResponseDto> {
+    return this.getUrlsByUserUseCase.execute((req as any).user.id);
   }
 
   @Put(':id')
@@ -139,9 +139,13 @@ export class UrlShortenerController {
   async updateUrl(
     @Param('id') id: string,
     @Body() updateUrlDto: UpdateUrlDto,
-    @Req() req: RequestWithUser,
+    @Req() req: Request,
   ): Promise<ShortUrlResponseDto> {
-    return this.updateUrlUseCase.execute(id, updateUrlDto, req.user.id);
+    return this.updateUrlUseCase.execute(
+      id,
+      updateUrlDto,
+      (req as any).user.id,
+    );
   }
 
   @Delete(':id')
@@ -161,10 +165,7 @@ export class UrlShortenerController {
     status: 404,
     description: 'URL not found',
   })
-  async deleteUrl(
-    @Param('id') id: string,
-    @Req() req: RequestWithUser,
-  ): Promise<void> {
-    await this.deleteUrlUseCase.execute(id, req.user.id);
+  async deleteUrl(@Param('id') id: string, @Req() req: Request): Promise<void> {
+    await this.deleteUrlUseCase.execute(id, (req as any).user.id);
   }
 }

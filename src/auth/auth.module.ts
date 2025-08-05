@@ -7,7 +7,7 @@ import { RegisterUseCase } from './application/use-cases/register.use-case';
 import { JwtAuthService } from './infrastructure/services/jwt-auth.service';
 import { JwtAuthGuard } from './presentation/guards/jwt-auth.guard';
 import { PrismaUserRepository } from '../users/infrastructure/repositories/prisma-user.repository';
-import { AUTH_SERVICE, USER_REPOSITORY } from './domain/tokens/auth.tokens';
+
 import { PrismaService } from '../shared/infrastructure/prisma/prisma.service';
 import { MetricsModule } from '../shared/infrastructure/metrics/metrics.module';
 
@@ -32,14 +32,14 @@ import { MetricsModule } from '../shared/infrastructure/metrics/metrics.module';
     JwtAuthGuard,
     PrismaService,
     {
-      provide: AUTH_SERVICE,
+      provide: 'AUTH_SERVICE',
       useClass: JwtAuthService,
     },
     {
-      provide: USER_REPOSITORY,
+      provide: 'USER_REPOSITORY',
       useClass: PrismaUserRepository,
     },
   ],
-  exports: [JwtAuthGuard, AUTH_SERVICE, JwtModule],
+  exports: [JwtAuthGuard, 'AUTH_SERVICE', JwtModule],
 })
 export class AuthModule {}
