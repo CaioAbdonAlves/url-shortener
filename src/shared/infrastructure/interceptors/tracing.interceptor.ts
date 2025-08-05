@@ -14,7 +14,7 @@ export class TracingInterceptor implements NestInterceptor {
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest();
-    const { method, url, body } = request;
+    const { method, url } = request;
     const user = (request as any).user;
 
     // Criar span para a requisição

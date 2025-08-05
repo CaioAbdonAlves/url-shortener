@@ -16,7 +16,7 @@ export class LoggingInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest<Request>();
     const response = context.switchToHttp().getResponse<Response>();
-    const { method, url, body } = request;
+    const { method, url } = request;
     const user = (request as any).user;
     const userAgent = request.get('User-Agent') || '';
     const startTime = Date.now();
@@ -32,6 +32,7 @@ export class LoggingInterceptor implements NestInterceptor {
 
     return next.handle().pipe(
       tap({
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         next: (data) => {
           const duration = Date.now() - startTime;
           this.logger.log(

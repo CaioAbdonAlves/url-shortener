@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { trace, context, SpanStatusCode } from '@opentelemetry/api';
+import { trace, SpanStatusCode } from '@opentelemetry/api';
 
 @Injectable()
 export class JaegerService implements OnModuleInit {
