@@ -4,14 +4,72 @@ Uma API REST completa para encurtamento de URLs construída com NestJS, TypeScri
 
 ## 🚀 Funcionalidades
 
+### ✅ **Funcionalidades Core**
 - **Encurtamento de URLs**: Gera códigos curtos de até 6 caracteres
 - **Autenticação JWT**: Sistema completo de registro e login
 - **URLs Personalizadas**: Suporte a códigos customizados
 - **Contagem de Clicks**: Rastreamento de acessos às URLs
 - **Soft Delete**: Exclusão lógica com preservação de dados
+- **CRUD Completo**: Create, Read, Update, Delete de URLs
+
+### ✅ **Documentação & API**
 - **Swagger/OpenAPI**: Documentação automática da API
-- **Observabilidade**: Logs estruturados e métricas
+- **Validação Robusta**: DTOs com class-validator
+- **Tratamento de Erros**: Global exception filter com códigos HTTP corretos
+- **Logs Estruturados**: Interceptor de logging com informações detalhadas
+
+### ✅ **Observabilidade Completa**
+- **Métricas Prometheus**: Contadores, histogramas e gauges
+- **Visualização Grafana**: Dashboards para monitoramento
+- **Tracing Jaeger**: Distributed tracing com OpenTelemetry
+- **Logs Estruturados**: Formato JSON com trace IDs
+
+### ✅ **Arquitetura & Qualidade**
+- **Clean Architecture**: Separação clara de responsabilidades
+- **Domain-Driven Design**: Foco em domínio de negócio
+- **SOLID Principles**: Código limpo e manutenível
+- **Dependency Injection**: Inversão de controle
+- **Repository Pattern**: Abstração de acesso a dados
+
+### ✅ **Testes & Qualidade**
 - **Testes Unitários**: Cobertura completa com Jest
+- **In-Memory Repositories**: Testes isolados sem banco
+- **Testes de Integração**: End-to-end testing
+- **Mocks e Stubs**: Testes determinísticos
+
+### ✅ **DevOps & Infraestrutura**
+- **Docker & Docker Compose**: Containerização completa
+- **PostgreSQL**: Banco de dados robusto
+- **Prisma ORM**: Type-safe database access
+- **Variáveis de Ambiente**: Configuração flexível
+- **Hot Reload**: Desenvolvimento eficiente
+
+### ✅ **Segurança**
+- **JWT Authentication**: Tokens seguros
+- **Password Hashing**: bcrypt para senhas
+- **Input Validation**: Sanitização de dados
+- **CORS**: Cross-origin resource sharing
+- **Rate Limiting**: Proteção contra abuso
+
+### ✅ **Monitoramento & Observabilidade**
+- **Prometheus Metrics**: Métricas customizadas
+- **Grafana Dashboards**: Visualização de dados
+- **Jaeger Tracing**: Distributed tracing
+- **Structured Logging**: Logs em formato JSON
+- **Error Tracking**: Captura e monitoramento de erros
+
+### ✅ **Performance & Escalabilidade**
+- **Response Time Tracking**: Monitoramento de performance
+- **Database Optimization**: Queries otimizadas
+- **Memory Management**: Gerenciamento eficiente de recursos
+- **Horizontal Scaling**: Preparado para escalar
+
+### ✅ **Developer Experience**
+- **TypeScript**: Type safety completo
+- **ESLint & Prettier**: Código padronizado
+- **Hot Reload**: Desenvolvimento rápido
+- **Comprehensive Logs**: Debugging facilitado
+- **Clear Error Messages**: Mensagens de erro claras
 
 ## 🏗️ Arquitetura
 
@@ -47,7 +105,7 @@ src/
 - **Documentação**: Swagger/OpenAPI
 - **Testes**: Jest + Supertest
 - **Containerização**: Docker + Docker Compose
-- **Observabilidade**: Winston + Prometheus (planejado)
+- **Observabilidade**: Prometheus + Grafana + Jaeger
 
 ## 📋 Pré-requisitos
 
@@ -87,10 +145,10 @@ BASE_URL="http://localhost:3000"
 # Redis (opcional)
 REDIS_URL="redis://localhost:6378"
 
-# Observability
-ENABLE_LOGGING=true
-ENABLE_METRICS=true
-ENABLE_TRACING=true
+# Observabilidade
+PROMETHEUS_ENABLED=true
+JAEGER_ENABLED=false
+LOG_LEVEL=info
 ```
 
 ### 3. Inicie os serviços com Docker Compose
@@ -182,6 +240,42 @@ Remove uma URL (soft delete, apenas proprietário).
 
 #### GET `/:shortCode`
 Redireciona para a URL original e incrementa contador.
+
+## 📊 Observabilidade
+
+O projeto implementa múltiplas camadas de observabilidade que podem ser ativadas/desativadas através de variáveis de ambiente:
+
+### Métricas (Prometheus + Grafana)
+
+- **Endpoint**: `http://localhost:3000/metrics`
+- **Prometheus**: `http://localhost:9090`
+- **Grafana**: `http://localhost:3001` (admin/admin)
+
+### Tracing (Jaeger)
+
+- **Jaeger UI**: `http://localhost:16686`
+- **Ativar**: `JAEGER_ENABLED=true` no `.env`
+
+### Logs Estruturados
+
+- **Nível**: Configurável via `LOG_LEVEL`
+- **Formato**: JSON estruturado com trace IDs
+
+### Configuração Rápida
+
+```bash
+# Copiar configurações
+cp config.example.env
+
+# Ativar observabilidade
+echo "PROMETHEUS_ENABLED=true" >> .env
+echo "JAEGER_ENABLED=true" >> .env
+
+# Iniciar serviços
+docker-compose up -d
+```
+
+📖 **Documentação completa**: [OBSERVABILITY.md](./OBSERVABILITY.md)
 
 ## 🧪 Testes
 
