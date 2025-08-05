@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { RedirectUrlUseCase } from './redirect-url.use-case';
 import { IShortUrlRepository } from '../../domain/repositories/short-url.repository.interface';
 import { ShortUrl } from '../../domain/entities/short-url.entity';
-import { SHORT_URL_REPOSITORY } from '../../domain/tokens/url-shortener.tokens';
 import { PrometheusService } from '../../../shared/infrastructure/metrics/prometheus.service';
 
 describe('RedirectUrlUseCase', () => {
@@ -19,7 +18,7 @@ describe('RedirectUrlUseCase', () => {
       providers: [
         RedirectUrlUseCase,
         {
-          provide: SHORT_URL_REPOSITORY,
+          provide: 'SHORT_URL_REPOSITORY',
           useValue: mockShortUrlRepository,
         },
         {
@@ -33,7 +32,7 @@ describe('RedirectUrlUseCase', () => {
     }).compile();
 
     useCase = module.get<RedirectUrlUseCase>(RedirectUrlUseCase);
-    shortUrlRepository = module.get(SHORT_URL_REPOSITORY);
+    shortUrlRepository = module.get('SHORT_URL_REPOSITORY');
   });
 
   describe('execute', () => {

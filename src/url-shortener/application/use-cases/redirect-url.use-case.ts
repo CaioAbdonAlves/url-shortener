@@ -1,12 +1,11 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { IShortUrlRepository } from '../../domain/repositories/short-url.repository.interface';
-import { SHORT_URL_REPOSITORY } from '../../domain/tokens/url-shortener.tokens';
 import { PrometheusService } from '../../../shared/infrastructure/metrics/prometheus.service';
 
 @Injectable()
 export class RedirectUrlUseCase {
   constructor(
-    @Inject(SHORT_URL_REPOSITORY)
+    @Inject('SHORT_URL_REPOSITORY')
     private readonly shortUrlRepository: IShortUrlRepository,
     private readonly prometheusService: PrometheusService,
   ) {}

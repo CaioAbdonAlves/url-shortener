@@ -4,10 +4,6 @@ import { IShortUrlRepository } from '../../domain/repositories/short-url.reposit
 import { IUrlShorteningService } from '../../domain/services/url-shortening.service.interface';
 import { ShortenUrlDto } from '../dtos/url-shortener.dto';
 import { ShortUrl } from '../../domain/entities/short-url.entity';
-import {
-  SHORT_URL_REPOSITORY,
-  URL_SHORTENING_SERVICE,
-} from '../../domain/tokens/url-shortener.tokens';
 import { PrometheusService } from '../../../shared/infrastructure/metrics/prometheus.service';
 
 describe('ShortenUrlUseCase', () => {
@@ -34,11 +30,11 @@ describe('ShortenUrlUseCase', () => {
       providers: [
         ShortenUrlUseCase,
         {
-          provide: SHORT_URL_REPOSITORY,
+          provide: 'SHORT_URL_REPOSITORY',
           useValue: mockShortUrlRepository,
         },
         {
-          provide: URL_SHORTENING_SERVICE,
+          provide: 'URL_SHORTENING_SERVICE',
           useValue: mockUrlShorteningService,
         },
         {
@@ -51,8 +47,8 @@ describe('ShortenUrlUseCase', () => {
     }).compile();
 
     useCase = module.get<ShortenUrlUseCase>(ShortenUrlUseCase);
-    shortUrlRepository = module.get(SHORT_URL_REPOSITORY);
-    urlShorteningService = module.get(URL_SHORTENING_SERVICE);
+    shortUrlRepository = module.get('SHORT_URL_REPOSITORY');
+    urlShorteningService = module.get('URL_SHORTENING_SERVICE');
   });
 
   afterEach(() => {

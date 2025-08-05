@@ -3,15 +3,14 @@ import { IUserRepository } from '../../../users/domain/repositories/user.reposit
 import { IAuthService } from '../../domain/services/auth.service.interface';
 import { User } from '../../../users/domain/entities/user.entity';
 import { RegisterDto, AuthResponseDto } from '../dtos/auth.dto';
-import { AUTH_SERVICE, USER_REPOSITORY } from '../../domain/tokens/auth.tokens';
 import { PrometheusService } from '../../../shared/infrastructure/metrics/prometheus.service';
 
 @Injectable()
 export class RegisterUseCase {
   constructor(
-    @Inject(USER_REPOSITORY)
+    @Inject('USER_REPOSITORY')
     private readonly userRepository: IUserRepository,
-    @Inject(AUTH_SERVICE)
+    @Inject('AUTH_SERVICE')
     private readonly authService: IAuthService,
     private readonly prometheusService: PrometheusService,
   ) {}

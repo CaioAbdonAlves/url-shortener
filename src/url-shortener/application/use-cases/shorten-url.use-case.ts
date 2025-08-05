@@ -3,18 +3,14 @@ import { IShortUrlRepository } from '../../domain/repositories/short-url.reposit
 import { IUrlShorteningService } from '../../domain/services/url-shortening.service.interface';
 import { ShortUrl } from '../../domain/entities/short-url.entity';
 import { ShortenUrlDto, ShortUrlResponseDto } from '../dtos/url-shortener.dto';
-import {
-  SHORT_URL_REPOSITORY,
-  URL_SHORTENING_SERVICE,
-} from '../../domain/tokens/url-shortener.tokens';
 import { PrometheusService } from '../../../shared/infrastructure/metrics/prometheus.service';
 
 @Injectable()
 export class ShortenUrlUseCase {
   constructor(
-    @Inject(SHORT_URL_REPOSITORY)
+    @Inject('SHORT_URL_REPOSITORY')
     private readonly shortUrlRepository: IShortUrlRepository,
-    @Inject(URL_SHORTENING_SERVICE)
+    @Inject('URL_SHORTENING_SERVICE')
     private readonly urlShorteningService: IUrlShorteningService,
     private readonly prometheusService: PrometheusService,
   ) {}

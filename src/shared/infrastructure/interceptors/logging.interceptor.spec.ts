@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ExecutionContext, CallHandler } from '@nestjs/common';
 import { of, throwError } from 'rxjs';
 import { LoggingInterceptor } from './logging.interceptor';
-import { RequestWithUser } from '../../../auth/presentation/interfaces/request-with-user.interface';
+import { Request } from 'express';
 
 describe('LoggingInterceptor', () => {
   let interceptor: LoggingInterceptor;
@@ -23,7 +23,7 @@ describe('LoggingInterceptor', () => {
         body: { test: 'data' },
         get: jest.fn().mockReturnValue('test-user-agent'),
         user: { email: 'test@example.com' },
-      } as any as RequestWithUser;
+      } as any as Request;
 
       const mockResponse = {
         statusCode: 200,
@@ -56,7 +56,7 @@ describe('LoggingInterceptor', () => {
         body: {},
         get: jest.fn().mockReturnValue('test-user-agent'),
         user: null,
-      } as any as RequestWithUser;
+      } as any as Request;
 
       const mockResponse = {
         statusCode: 500,
@@ -90,7 +90,7 @@ describe('LoggingInterceptor', () => {
         body: null,
         get: jest.fn().mockReturnValue(''),
         user: null,
-      } as any as RequestWithUser;
+      } as any as Request;
 
       const mockResponse = {
         statusCode: 200,
@@ -123,7 +123,7 @@ describe('LoggingInterceptor', () => {
         body: { update: 'data' },
         get: jest.fn().mockReturnValue('chrome-user-agent'),
         user: { email: 'authenticated@example.com' },
-      } as any as RequestWithUser;
+      } as any as Request;
 
       const mockResponse = {
         statusCode: 200,

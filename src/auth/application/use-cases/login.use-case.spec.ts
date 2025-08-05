@@ -5,7 +5,6 @@ import { IUserRepository } from '../../../users/domain/repositories/user.reposit
 import { IAuthService } from '../../domain/services/auth.service.interface';
 import { LoginDto } from '../../application/dtos/auth.dto';
 import { User } from '../../../users/domain/entities/user.entity';
-import { USER_REPOSITORY, AUTH_SERVICE } from '../../domain/tokens/auth.tokens';
 import { PrometheusService } from '../../../shared/infrastructure/metrics/prometheus.service';
 
 describe('LoginUseCase', () => {
@@ -27,11 +26,11 @@ describe('LoginUseCase', () => {
       providers: [
         LoginUseCase,
         {
-          provide: USER_REPOSITORY,
+          provide: 'USER_REPOSITORY',
           useValue: mockUserRepository,
         },
         {
-          provide: AUTH_SERVICE,
+          provide: 'AUTH_SERVICE',
           useValue: mockAuthService,
         },
         {
@@ -44,8 +43,8 @@ describe('LoginUseCase', () => {
     }).compile();
 
     useCase = module.get<LoginUseCase>(LoginUseCase);
-    userRepository = module.get(USER_REPOSITORY);
-    authService = module.get(AUTH_SERVICE);
+    userRepository = module.get('USER_REPOSITORY');
+    authService = module.get('AUTH_SERVICE');
   });
 
   describe('execute', () => {

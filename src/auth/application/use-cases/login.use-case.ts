@@ -2,15 +2,14 @@ import { Injectable, Inject, UnauthorizedException } from '@nestjs/common';
 import { IUserRepository } from '../../../users/domain/repositories/user.repository.interface';
 import { IAuthService } from '../../domain/services/auth.service.interface';
 import { LoginDto, AuthResponseDto } from '../dtos/auth.dto';
-import { AUTH_SERVICE, USER_REPOSITORY } from '../../domain/tokens/auth.tokens';
 import { PrometheusService } from '../../../shared/infrastructure/metrics/prometheus.service';
 
 @Injectable()
 export class LoginUseCase {
   constructor(
-    @Inject(USER_REPOSITORY)
+    @Inject('USER_REPOSITORY')
     private readonly userRepository: IUserRepository,
-    @Inject(AUTH_SERVICE)
+    @Inject('AUTH_SERVICE')
     private readonly authService: IAuthService,
     private readonly prometheusService: PrometheusService,
   ) {}
