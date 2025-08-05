@@ -24,8 +24,13 @@ export class MetricsInterceptor implements NestInterceptor {
         const route = request.route?.path || request.path;
         const statusCode = response.statusCode;
 
-        this.prometheusService.recordResponseTime(method, route, statusCode, duration);
+        this.prometheusService.recordResponseTime(
+          method,
+          route,
+          statusCode,
+          duration,
+        );
       }),
     );
   }
-} 
+}

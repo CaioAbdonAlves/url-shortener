@@ -84,4 +84,4 @@ describe('AuthController', () => {
       expect(result).toEqual(expectedResponse);
     });
   });
-}); 
+});

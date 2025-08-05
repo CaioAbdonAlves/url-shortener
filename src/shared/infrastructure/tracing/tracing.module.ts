@@ -5,4 +5,4 @@ import { JaegerService } from './jaeger.service';
   providers: [JaegerService],
   exports: [JaegerService],
 })
-export class TracingModule {} 
+export class TracingModule {}

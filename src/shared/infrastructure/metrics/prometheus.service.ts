@@ -117,7 +117,12 @@ export class PrometheusService implements OnModuleInit {
   }
 
   // Método para registrar tempo de resposta
-  recordResponseTime(method: string, route: string, statusCode: number, duration: number) {
+  recordResponseTime(
+    method: string,
+    route: string,
+    statusCode: number,
+    duration: number,
+  ) {
     this.responseTimeHistogram.observe(
       { method, route, status_code: statusCode.toString() },
       duration / 1000, // Converter para segundos
@@ -147,4 +152,4 @@ export class PrometheusService implements OnModuleInit {
   async getMetrics(): Promise<string> {
     return register.metrics();
   }
-} 
+}

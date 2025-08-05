@@ -60,7 +60,7 @@ describe('LoginUseCase', () => {
         'test@example.com',
         'hashedPassword',
         new Date(),
-        new Date()
+        new Date(),
       );
 
       const token = 'jwt-token';
@@ -78,7 +78,10 @@ describe('LoginUseCase', () => {
         loginDto.password,
         mockUser.getPassword,
       );
-      expect(authService.generateToken).toHaveBeenCalledWith(mockUser.getId, mockUser.getEmail);
+      expect(authService.generateToken).toHaveBeenCalledWith(
+        mockUser.getId,
+        mockUser.getEmail,
+      );
       expect(result).toEqual({
         accessToken: token,
         user: {
@@ -98,7 +101,9 @@ describe('LoginUseCase', () => {
       userRepository.findByEmail.mockResolvedValue(null);
 
       // Act & Assert
-      await expect(useCase.execute(loginDto)).rejects.toThrow(UnauthorizedException);
+      await expect(useCase.execute(loginDto)).rejects.toThrow(
+        UnauthorizedException,
+      );
       expect(userRepository.findByEmail).toHaveBeenCalledWith(loginDto.email);
       expect(authService.validatePassword).not.toHaveBeenCalled();
       expect(authService.generateToken).not.toHaveBeenCalled();
@@ -116,14 +121,16 @@ describe('LoginUseCase', () => {
         'test@example.com',
         'hashedPassword',
         new Date(),
-        new Date()
+        new Date(),
       );
 
       userRepository.findByEmail.mockResolvedValue(mockUser);
       authService.validatePassword.mockResolvedValue(false);
 
       // Act & Assert
-      await expect(useCase.execute(loginDto)).rejects.toThrow(UnauthorizedException);
+      await expect(useCase.execute(loginDto)).rejects.toThrow(
+        UnauthorizedException,
+      );
       expect(userRepository.findByEmail).toHaveBeenCalledWith(loginDto.email);
       expect(authService.validatePassword).toHaveBeenCalledWith(
         loginDto.password,
@@ -132,4 +139,4 @@ describe('LoginUseCase', () => {
       expect(authService.generateToken).not.toHaveBeenCalled();
     });
   });
-}); 
+});

@@ -23,12 +23,12 @@ export class CacheService {
     try {
       const key = this.getUserUrlsKey(userId);
       const cached = await this.cacheManager.get(key);
-      
+
       if (cached) {
         this.logger.debug(`Cache hit for user ${userId}`);
         return cached;
       }
-      
+
       this.logger.debug(`Cache miss for user ${userId}`);
       return null;
     } catch (error) {
@@ -88,4 +88,4 @@ export class CacheService {
       return false;
     }
   }
-} 
+}

@@ -133,4 +133,4 @@ describe('GetUrlsByUserUseCase', () => {
       expect(shortUrlRepository.findByUserId).toHaveBeenCalledWith(userId);
     });
   });
-}); 
+});

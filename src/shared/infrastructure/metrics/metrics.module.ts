@@ -7,4 +7,4 @@ import { MetricsController } from './metrics.controller';
   providers: [PrometheusService],
   exports: [PrometheusService],
 })
-export class MetricsModule {} 
+export class MetricsModule {}

@@ -1,4 +1,9 @@
-import { Injectable, Inject, NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { IShortUrlRepository } from '../../domain/repositories/short-url.repository.interface';
 import { UpdateUrlDto, ShortUrlResponseDto } from '../dtos/url-shortener.dto';
 import { CacheService } from '../../../shared/infrastructure/cache/cache.service';
@@ -18,7 +23,7 @@ export class UpdateUrlUseCase {
   ): Promise<ShortUrlResponseDto> {
     // Find the URL by ID
     const shortUrl = await this.shortUrlRepository.findById(id);
-    
+
     if (!shortUrl) {
       throw new NotFoundException('URL not found');
     }
@@ -50,4 +55,4 @@ export class UpdateUrlUseCase {
       updatedAt: updatedShortUrl.getUpdatedAt,
     };
   }
-} 
+}

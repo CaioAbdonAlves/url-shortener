@@ -22,4 +22,4 @@ export class MetricsController {
   async test(@Res() res: Response) {
     res.send('Metrics controller is working!');
   }
-} 
+}

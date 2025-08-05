@@ -1,4 +1,9 @@
-import { Injectable, Inject, NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { IShortUrlRepository } from '../../domain/repositories/short-url.repository.interface';
 import { CacheService } from '../../../shared/infrastructure/cache/cache.service';
 
@@ -13,7 +18,7 @@ export class DeleteUrlUseCase {
   async execute(id: string, userId: string): Promise<void> {
     // Find the URL by ID
     const shortUrl = await this.shortUrlRepository.findById(id);
-    
+
     if (!shortUrl) {
       throw new NotFoundException('URL not found');
     }
@@ -34,4 +39,4 @@ export class DeleteUrlUseCase {
     // Invalidar cache do usuário
     await this.cacheService.invalidateUserUrls(userId);
   }
-} 
+}

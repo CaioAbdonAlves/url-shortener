@@ -32,30 +32,30 @@ export class TracingInterceptor implements NestInterceptor {
       tap({
         next: (data) => {
           const duration = Date.now() - startTime;
-          
+
           this.jaegerService.setSpanAttributes(span, {
             'http.status_code': 200,
             'http.response_time_ms': duration,
             'response.size': data ? JSON.stringify(data).length : 0,
           });
-          
+
           this.jaegerService.setSpanStatus(span, 1); // OK
           this.jaegerService.endSpan(span);
         },
         error: (error) => {
           const duration = Date.now() - startTime;
-          
+
           this.jaegerService.setSpanAttributes(span, {
             'http.status_code': error.status || 500,
             'http.response_time_ms': duration,
             'error.type': error.constructor.name,
             'error.message': error.message,
           });
-          
+
           this.jaegerService.recordException(span, error);
           this.jaegerService.endSpan(span);
         },
       }),
     );
   }
-} 
+}

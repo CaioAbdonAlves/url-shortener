@@ -37,7 +37,12 @@ describe('GlobalExceptionFilter', () => {
     it('should handle HttpException correctly', () => {
       const exception = new HttpException('Test error', HttpStatus.BAD_REQUEST);
 
-      filter.catch(exception, { switchToHttp: () => ({ getRequest: () => mockRequest, getResponse: () => mockResponse }) } as any);
+      filter.catch(exception, {
+        switchToHttp: () => ({
+          getRequest: () => mockRequest,
+          getResponse: () => mockResponse,
+        }),
+      } as any);
 
       expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -50,9 +55,16 @@ describe('GlobalExceptionFilter', () => {
     it('should handle generic Error correctly', () => {
       const exception = new Error('Generic error');
 
-      filter.catch(exception, { switchToHttp: () => ({ getRequest: () => mockRequest, getResponse: () => mockResponse }) } as any);
+      filter.catch(exception, {
+        switchToHttp: () => ({
+          getRequest: () => mockRequest,
+          getResponse: () => mockResponse,
+        }),
+      } as any);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR);
+      expect(mockResponse.status).toHaveBeenCalledWith(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
       expect(mockResponse.json).toHaveBeenCalledWith({
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: 'Internal server error',
@@ -63,9 +75,16 @@ describe('GlobalExceptionFilter', () => {
     it('should handle unknown exceptions correctly', () => {
       const exception = 'String error';
 
-      filter.catch(exception, { switchToHttp: () => ({ getRequest: () => mockRequest, getResponse: () => mockResponse }) } as any);
+      filter.catch(exception, {
+        switchToHttp: () => ({
+          getRequest: () => mockRequest,
+          getResponse: () => mockResponse,
+        }),
+      } as any);
 
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR);
+      expect(mockResponse.status).toHaveBeenCalledWith(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
       expect(mockResponse.json).toHaveBeenCalledWith({
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: 'Internal server error',
@@ -73,4 +92,4 @@ describe('GlobalExceptionFilter', () => {
       });
     });
   });
-}); 
+});

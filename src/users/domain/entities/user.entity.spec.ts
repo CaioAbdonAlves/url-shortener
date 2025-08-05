@@ -56,4 +56,4 @@ describe('User Entity', () => {
       expect(user.getUpdatedAt).toEqual(new Date('2023-01-01'));
     });
   });
-}); 
+});

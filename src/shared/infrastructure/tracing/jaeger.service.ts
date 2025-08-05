@@ -17,15 +17,22 @@ export class JaegerService implements OnModuleInit {
       // Importação dinâmica para evitar dependências desnecessárias
       const { NodeTracerProvider } = require('@opentelemetry/sdk-trace-node');
       const { JaegerExporter } = require('@opentelemetry/exporter-jaeger');
-      const { registerInstrumentations } = require('@opentelemetry/instrumentation');
-      const { HttpInstrumentation } = require('@opentelemetry/instrumentation-http');
-      const { ExpressInstrumentation } = require('@opentelemetry/instrumentation-express');
+      const {
+        registerInstrumentations,
+      } = require('@opentelemetry/instrumentation');
+      const {
+        HttpInstrumentation,
+      } = require('@opentelemetry/instrumentation-http');
+      const {
+        ExpressInstrumentation,
+      } = require('@opentelemetry/instrumentation-express');
       const { SimpleSpanProcessor } = require('@opentelemetry/sdk-trace-base');
 
       const provider = new NodeTracerProvider();
-      
+
       const exporter = new JaegerExporter({
-        endpoint: process.env.JAEGER_ENDPOINT || 'http://localhost:14268/api/traces',
+        endpoint:
+          process.env.JAEGER_ENDPOINT || 'http://localhost:14268/api/traces',
         serviceName: process.env.JAEGER_SERVICE_NAME || 'url-shortener-api',
       });
 
@@ -101,4 +108,4 @@ export class JaegerService implements OnModuleInit {
     const currentSpan = trace.getActiveSpan();
     return currentSpan?.spanContext().spanId || null;
   }
-} 
+}

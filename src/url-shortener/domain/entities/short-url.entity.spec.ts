@@ -87,4 +87,4 @@ describe('ShortUrl Entity', () => {
       expect(shortUrl.getDeletedAt).toBeNull();
     });
   });
-}); 
+});
