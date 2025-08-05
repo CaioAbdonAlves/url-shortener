@@ -5,6 +5,7 @@ import { IUrlShorteningService } from '../../domain/services/url-shortening.serv
 import { ShortenUrlDto } from '../dtos/url-shortener.dto';
 import { ShortUrl } from '../../domain/entities/short-url.entity';
 import { PrometheusService } from '../../../shared/infrastructure/metrics/prometheus.service';
+import { CacheService } from '../../../shared/infrastructure/cache/cache.service';
 
 describe('ShortenUrlUseCase', () => {
   let useCase: ShortenUrlUseCase;
@@ -26,6 +27,10 @@ describe('ShortenUrlUseCase', () => {
       validateUrl: jest.fn(),
     };
 
+    const mockCacheService = {
+      invalidateUserUrls: jest.fn(),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ShortenUrlUseCase,
@@ -42,6 +47,10 @@ describe('ShortenUrlUseCase', () => {
           useValue: {
             incrementUrlCreated: jest.fn(),
           },
+        },
+        {
+          provide: CacheService,
+          useValue: mockCacheService,
         },
       ],
     }).compile();

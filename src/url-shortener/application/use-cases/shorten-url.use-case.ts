@@ -4,6 +4,7 @@ import { IUrlShorteningService } from '../../domain/services/url-shortening.serv
 import { ShortUrl } from '../../domain/entities/short-url.entity';
 import { ShortenUrlDto, ShortUrlResponseDto } from '../dtos/url-shortener.dto';
 import { PrometheusService } from '../../../shared/infrastructure/metrics/prometheus.service';
+import { CacheService } from '../../../shared/infrastructure/cache/cache.service';
 
 @Injectable()
 export class ShortenUrlUseCase {
@@ -13,6 +14,7 @@ export class ShortenUrlUseCase {
     @Inject('URL_SHORTENING_SERVICE')
     private readonly urlShorteningService: IUrlShorteningService,
     private readonly prometheusService: PrometheusService,
+    private readonly cacheService: CacheService,
   ) {}
 
   async execute(
@@ -42,6 +44,11 @@ export class ShortenUrlUseCase {
 
     // Registrar métrica
     this.prometheusService.incrementUrlCreated(userId);
+
+    // Invalidar cache do usuário se estiver autenticado
+    if (userId) {
+      await this.cacheService.invalidateUserUrls(userId);
+    }
 
     return {
       id: savedShortUrl.getId,

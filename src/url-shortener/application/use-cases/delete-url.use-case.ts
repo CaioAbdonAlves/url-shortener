@@ -1,12 +1,13 @@
 import { Injectable, Inject, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { IShortUrlRepository } from '../../domain/repositories/short-url.repository.interface';
-import { SHORT_URL_REPOSITORY } from '../../domain/tokens/url-shortener.tokens';
+import { CacheService } from '../../../shared/infrastructure/cache/cache.service';
 
 @Injectable()
 export class DeleteUrlUseCase {
   constructor(
-    @Inject(SHORT_URL_REPOSITORY)
+    @Inject('SHORT_URL_REPOSITORY')
     private readonly shortUrlRepository: IShortUrlRepository,
+    private readonly cacheService: CacheService,
   ) {}
 
   async execute(id: string, userId: string): Promise<void> {
@@ -29,5 +30,8 @@ export class DeleteUrlUseCase {
 
     // Soft delete the URL
     await this.shortUrlRepository.softDelete(id);
+
+    // Invalidar cache do usuário
+    await this.cacheService.invalidateUserUrls(userId);
   }
 } 

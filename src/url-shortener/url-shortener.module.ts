@@ -8,17 +8,13 @@ import { UpdateUrlUseCase } from './application/use-cases/update-url.use-case';
 import { DeleteUrlUseCase } from './application/use-cases/delete-url.use-case';
 import { PrismaShortUrlRepository } from './infrastructure/repositories/prisma-short-url.repository';
 import { RandomUrlShorteningService } from './infrastructure/services/random-url-shortening.service';
-
-import {
-  SHORT_URL_REPOSITORY,
-  URL_SHORTENING_SERVICE,
-} from './domain/tokens/url-shortener.tokens';
 import { PrismaService } from '../shared/infrastructure/prisma/prisma.service';
 import { AuthModule } from '../auth/auth.module';
 import { MetricsModule } from '../shared/infrastructure/metrics/metrics.module';
+import { AppCacheModule } from '../shared/infrastructure/cache/cache.module';
 
 @Module({
-  imports: [AuthModule, MetricsModule],
+  imports: [AuthModule, MetricsModule, AppCacheModule],
   controllers: [UrlShortenerController, RedirectController],
   providers: [
     ShortenUrlUseCase,
@@ -28,14 +24,14 @@ import { MetricsModule } from '../shared/infrastructure/metrics/metrics.module';
     DeleteUrlUseCase,
     PrismaService,
     {
-      provide: SHORT_URL_REPOSITORY,
+      provide: 'SHORT_URL_REPOSITORY',
       useClass: PrismaShortUrlRepository,
     },
     {
-      provide: URL_SHORTENING_SERVICE,
+      provide: 'URL_SHORTENING_SERVICE',
       useClass: RandomUrlShorteningService,
     },
   ],
-  exports: [SHORT_URL_REPOSITORY, URL_SHORTENING_SERVICE],
+  exports: ['SHORT_URL_REPOSITORY', 'URL_SHORTENING_SERVICE'],
 })
 export class UrlShortenerModule {}

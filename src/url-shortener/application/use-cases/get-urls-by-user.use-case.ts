@@ -4,16 +4,24 @@ import {
   ShortUrlResponseDto,
   UrlListResponseDto,
 } from '../dtos/url-shortener.dto';
-import { SHORT_URL_REPOSITORY } from '../../domain/tokens/url-shortener.tokens';
+import { CacheService } from '../../../shared/infrastructure/cache/cache.service';
 
 @Injectable()
 export class GetUrlsByUserUseCase {
   constructor(
-    @Inject(SHORT_URL_REPOSITORY)
+    @Inject('SHORT_URL_REPOSITORY')
     private readonly shortUrlRepository: IShortUrlRepository,
+    private readonly cacheService: CacheService,
   ) {}
 
   async execute(userId: string): Promise<UrlListResponseDto> {
+    // Tentar obter do cache primeiro
+    const cached = await this.cacheService.getUserUrls(userId);
+    if (cached) {
+      return cached;
+    }
+
+    // Se não estiver no cache, buscar do banco
     const urls = await this.shortUrlRepository.findByUserId(userId);
 
     const responseUrls: ShortUrlResponseDto[] = urls.map((url) => ({
@@ -26,9 +34,14 @@ export class GetUrlsByUserUseCase {
       updatedAt: url.getUpdatedAt,
     }));
 
-    return {
+    const result = {
       urls: responseUrls,
       total: responseUrls.length,
     };
+
+    // Armazenar no cache
+    await this.cacheService.setUserUrls(userId, result);
+
+    return result;
   }
 }

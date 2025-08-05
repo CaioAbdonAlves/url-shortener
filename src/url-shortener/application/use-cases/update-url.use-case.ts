@@ -1,13 +1,14 @@
 import { Injectable, Inject, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { IShortUrlRepository } from '../../domain/repositories/short-url.repository.interface';
 import { UpdateUrlDto, ShortUrlResponseDto } from '../dtos/url-shortener.dto';
-import { SHORT_URL_REPOSITORY } from '../../domain/tokens/url-shortener.tokens';
+import { CacheService } from '../../../shared/infrastructure/cache/cache.service';
 
 @Injectable()
 export class UpdateUrlUseCase {
   constructor(
-    @Inject(SHORT_URL_REPOSITORY)
+    @Inject('SHORT_URL_REPOSITORY')
     private readonly shortUrlRepository: IShortUrlRepository,
+    private readonly cacheService: CacheService,
   ) {}
 
   async execute(
@@ -35,6 +36,9 @@ export class UpdateUrlUseCase {
     // Update the URL
     shortUrl.updateOriginalUrl(updateUrlDto.originalUrl);
     const updatedShortUrl = await this.shortUrlRepository.update(shortUrl);
+
+    // Invalidar cache do usuário
+    await this.cacheService.invalidateUserUrls(userId);
 
     return {
       id: updatedShortUrl.getId,
